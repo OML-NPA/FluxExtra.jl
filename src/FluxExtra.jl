@@ -1,6 +1,6 @@
 module FluxExtra
 
-using Parameters, Flux, CUDA
+using Flux, CUDA
 import CUDA.CuArray
 include("layers.jl")
 
