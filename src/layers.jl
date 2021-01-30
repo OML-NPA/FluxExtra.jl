@@ -116,3 +116,8 @@ struct Activation
     f::Function
 end
 (m::Activation)(x) = m.f.(x)
+
+# Identity layer
+struct Identity
+end
+(m::Identity)(x) = x
