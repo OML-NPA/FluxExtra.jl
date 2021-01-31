@@ -4,7 +4,7 @@ Additional layers for the Flux machine learning library.
 
 ### Parallel
 ```
-Parallel(x::AbstractArray{Float32,4},layers::Tuple)
+Parallel(layers::Tuple)
 ```
 ### Catenation
 ```
