@@ -6,26 +6,38 @@ Additional layers for the Flux machine learning library.
 ```
 Parallel(layers::Tuple)
 ```
+Allows to have multiple branches in a neural network.
+
 ### Catenation
 ```
 Catenation(dim::Int64)
 ```
+Concatenates an array of arrays along a dimension `dim`. A convenient way of writing `cat(x..., dims = dim)`.
+
 ### Decatenation
 ```
 Decatenation(output::Int64,dim::Int64)
 ```
+Breaks an array into a number of arrays which is equal to `output` along a dimension `dim`.
+
 ### Addition
 ```
 Addition()
 ```
+A convenient way of using `x -> sum(x)`
+
 ### Upscaling
 ```
 Upscaling(multiplier::Float64,new_size::Tuple{Int64,Int64,Int64},dims::Union{Int64,Tuple{Int64,Int64},Tuple{Int64,Int64,Int64}}))
 ```
+Bileniar upscaling. Scales the input array by `multiplier`. Requires a user to input a new size as a second argument and from 1 to 3 dimensions that should be scaled.
+
 ### Activation
 ```
 Activation(f::Function)
 ```
+A convenient way of using `x -> some_activation_function`.
+
 ### Identity
 ```
 Identity()
