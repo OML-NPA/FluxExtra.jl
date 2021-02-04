@@ -26,3 +26,8 @@ Upscaling(multiplier::Float64,new_size::Tuple{Int64,Int64,Int64},dims::Union{Int
 ```
 Activation(f::Function)
 ```
+### Identity
+```
+Identity()
+```
+Returns its input without changes. Should be used with a Parallel layer if one wants to have a branch that does not change its input.
