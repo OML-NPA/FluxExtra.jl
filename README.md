@@ -12,7 +12,7 @@ Allows to have multiple branches in a neural network.
 ```
 Catenation(dim::Int64)
 ```
-Concatenates an array of arrays along a dimension `dim`. A convenient way of writing `cat(x..., dims = dim)`.
+Concatenates an array of arrays along a dimension `dim`. A convenient way of writing `x -> cat(x..., dims = dim)`.
 
 ### Decatenation
 ```
@@ -28,7 +28,7 @@ A convenient way of using `x -> sum(x)`
 
 ### Upscaling
 ```
-Upscaling(multiplier::Float64,new_size::Tuple{Int64,Int64,Int64},dims::Union{Int64,Tuple{Int64,Int64},Tuple{Int64,Int64,Int64}}))
+Upscaling(multiplier::Int64,dims::Union{Int64,Tuple{Int64,Int64},Tuple{Int64,Int64,Int64}}))
 ```
 Bileniar upscaling. Scales the input array by `multiplier`. Requires a user to input a new size as a second argument and from 1 to 3 dimensions that should be scaled.
 
