@@ -79,7 +79,7 @@ function upscale(x::CuArray{T,4},ratio::Tuple{Int64,Int64,Int64,Int64}) where T<
     s = size(x)
     h,w,c,n = s
     s_ratio = (ratio[1], 1, ratio[2], 1, ratio[3], 1)
-    y = CUDA.ones(T,s_ratio)
+    y = cu(ones(T,s_ratio))
     z = reshape(x, (1, h, 1, w, 1, c, n))  .* y
     new_x = reshape(z, s .* ratio)
     return new_x
