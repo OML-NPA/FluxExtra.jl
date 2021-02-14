@@ -1,69 +1,46 @@
 
 # Parallel layer
 struct Parallel
-    layers::Tuple
+    layers::NTuple{N,Any} where N
 end
-function Parallel(x::Array{Float32,4},layers::Tuple)
-    result::Tuple{Array{Float32,4},Array{Float32,4}} = map(fun -> fun(x), layers)
+function Parallel(x::T,layers::NTuple{N,Any}) where{T<:AbstractArray{<:AbstractFloat,4},N}
+    result= map(fun -> fun(x), layers)
     return result
 end
-function Parallel(x::CuArray{Float32,4},layers::Tuple)
-    result::Tuple{CuArray{Float32,4},CuArray{Float32,4}} = map(fun -> fun(x), layers)
+function Parallel(x::NTuple{N,T},layers::NTuple{N,Any}) where {T<:AbstractArray{<:AbstractFloat,4},N}
+    result = map((fun,xn) -> fun(xn), layers,x)
     return result
 end
 (m::Parallel)(x) = Parallel(x, m.layers)
 Flux.@functor Parallel
 
-# Concatenation layer
+# Catenation layer
 struct Catenation
     dim::Int64
 end
-(m::Catenation)(x) = cat(x..., dims = m.dim)
+(m::Catenation)(x::NTuple{N,T}) where {T,N} = cat(x...,dims=m.dim)::T
 
-# Deconcatenation layer
+# Decatenation layer
 struct Decatenation
     outputs::Int64
     dim::Int64
 end
-function Decatenation_func(x::Array{Float32},
-        outputs::Int64, dim::Int64)
-    x_out = Array{Array{Float32,4}}(undef, outputs)
+function Decatenation_func(x::T,outputs::Int64, 
+        dim::Int64) where T<:AbstractArray{<:AbstractFloat,4}
     step_var = Int64(size(x, dim) / outputs)
-    if dims == 1
-        for i = 1:outputs
-            x_out[i] = x[(1+(i-1)*step_var):(i)*step, :, :,:]
-        end
-    elseif dims == 2
-        for i = 1:outputs
-            x_out[i] = x[:, (1+(i-1)*step_var):(i)*step, :,:]
-        end
-    elseif dims == 3
-        for i = 1:outputs
-            x_out[i] = x[:, :, (1+(i-1)*step_var):(i)*step_var,:]
-        end
+    f = i::Int64 -> (1+(i-1)*step_var):(i)*step_var
+    vals = ntuple(i -> i, outputs)
+    inds_vec = map(f,vals)
+    if dim == 1
+        x_out = map(inds -> x[inds,:,:,:],inds_vec)
+    elseif dim == 2
+        x_out = map(inds -> x[:,inds,:,:],inds_vec)
+    else
+        x_out = map(inds -> x[:,:,inds,:],inds_vec)
     end
     return x_out
 end
-function Decatenation_func(x::CuArray{Float32,4},
-        outputs::Int64, dim::Int64)
-    x_out = Array{CuArray{Float32,4}}(undef, outputs)
-    step_var = Int64(size(x, dim) / outputs)
-    if dims == 1
-        for i = 1:outputs
-            x_out[i] = x[(1+(i-1)*step_var):(i)*step, :, :,:]
-        end
-    elseif dims == 2
-        for i = 1:outputs
-            x_out[i] = x[:, (1+(i-1)*step_var):(i)*step, :,:]
-        end
-    elseif dims == 3
-        for i = 1:outputs
-            x_out[i] = x[:, :, (1+(i-1)*step_var):(i)*step_var,:]
-        end
-    end
-    return x_out
-end
-(m::Decatenation)(x) = Decatenation_func(x, m.outputs, m.dim)
+(m::Decatenation)(x) = Decatenation_func(x,m.outputs,m.dim)
 
 # Addition layer
 struct Addition end
@@ -71,14 +48,11 @@ struct Addition end
 
 # Upscaling layer
 struct Upscaling
-    multiplier::Float64
-    new_size::Tuple{Int64,Int64,Int64}
+    multiplier::Int64
     dims::Union{Int64,Tuple{Int64,Int64},Tuple{Int64,Int64,Int64}}
 end
-function Upscaling_func(x::Union{CuArray{Float32,4},Array{Float32,4}}, multiplier::Float64,
-        new_size::Tuple{Int64,Int64,Int64},
-        dims::Union{Int64,Tuple{Int64,Int64},Tuple{Int64,Int64,Int64}})
-    multiplier = Int64(multiplier)
+function Upscaling_func(x::AbstractArray{T,4}, multiplier::Int64,
+        dims::Union{Int64,Tuple{Int64,Int64},Tuple{Int64,Int64,Int64}}) where T<:AbstractFloat
     if dims == 1
         ratio = (multiplier,1,1,1)
     elseif dims == 2
@@ -92,24 +66,25 @@ function Upscaling_func(x::Union{CuArray{Float32,4},Array{Float32,4}}, multiplie
     end
     return upscale(x,ratio)
 end
-function upscale(x::Array{Float32,4},ratio::Tuple{Int64,Int64,Int64,Int64})
+function upscale(x::Array{T,4},ratio::Tuple{Int64,Int64,Int64,Int64}) where T<:AbstractFloat
     s = size(x)
     h,w,c,n = s
-    y = fill(1.0f0, (ratio[1], 1, ratio[2], 1, ratio[3], 1))
+    s_ratio = (ratio[1], 1, ratio[2], 1, ratio[3], 1)
+    y = ones(T,s_ratio)
     z = reshape(x, (1, h, 1, w, 1, c, n))  .* y
     new_x = reshape(z, s .* ratio)
     return new_x
 end
-function upscale(x::CuArray{Float32,4},ratio::Tuple{Int64,Int64,Int64,Int64})
+function upscale(x::CuArray{T,4},ratio::Tuple{Int64,Int64,Int64,Int64}) where T<:AbstractFloat
     s = size(x)
     h,w,c,n = s
-    y = gpu(fill(1.0f0, (ratio[1], 1, ratio[2], 1, ratio[3], 1)))
+    s_ratio = (ratio[1], 1, ratio[2], 1, ratio[3], 1)
+    y = CUDA.ones(T,s_ratio)
     z = reshape(x, (1, h, 1, w, 1, c, n))  .* y
     new_x = reshape(z, s .* ratio)
     return new_x
 end
-(m::Upscaling)(x) = Upscaling_func(x,cpu(m.multiplier),
-    cpu(m.new_size),cpu( m.dims))
+(m::Upscaling)(x) = Upscaling_func(x,m.multiplier,m.dims)
 
 # Activation layer
 struct Activation
