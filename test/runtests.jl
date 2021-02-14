@@ -1,6 +1,6 @@
 
 using Flux, CUDA
-path_layers = joinpath(pwd(),"src/layers.jl")
+path_layers = joinpath(dirname(@__DIR__),"src","layers.jl")
 include(path_layers)
 
 function test(model::Chain,x::T,y::T) where T<:AbstractArray{<:AbstractFloat,4}
