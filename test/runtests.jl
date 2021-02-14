@@ -1,7 +1,7 @@
 
 using Flux, CUDA
-path_layers = joinpath(dirname(@__DIR__),"src","FluxExtra.jl")
-include(path_layers)
+path = joinpath(dirname(@__DIR__),"src","FluxExtra.jl")
+include(path)
 using .FluxExtra
 
 function test(model::Chain,x::T,y::T) where T<:AbstractArray{<:AbstractFloat,4}
@@ -25,54 +25,64 @@ end
 
 opt = Descent(0.1)
 loss = Flux.Losses.mse
-test_layer = Conv((2, 2), 1=>2,pad=SamePad())
-test_layer2 = Chain(Conv((2, 2), 1=>2,pad=SamePad()))
+test_layer = Conv((3, 3), 1=>2,pad=SamePad())
+test_layer2 = Chain(Conv((3, 3), 1=>2,pad=SamePad()))
 
 # Test Parallel and Catenation layers
-x = rand(Float32,4,4,1,1)
-y = rand(Float32,4,4,4,1)
+x = rand(Float32,6,6,1,1)
+y = rand(Float32,6,6,4,1)
 model = Chain(Parallel((test_layer,test_layer2)),Catenation(3))
 test(model,x,y)
+test(move(model,gpu),gpu(x),gpu(y))
 
 # Test Decatenation layer
-x = rand(Float32,4,4,2,1)
-y = rand(Float32,4,4,4,1)
+x = rand(Float32,6,6,2,1)
+y = rand(Float32,6,6,4,1)
 model = Chain(Decatenation(2,3),Parallel((test_layer,test_layer)),Catenation(3))
 test(model,x,y)
+test(move(model,gpu),gpu(x),gpu(y))
 
 # Test Addition layer
-x = rand(Float32,4,4,2,1)
-y = rand(Float32,4,4,1,1)
+x = rand(Float32,6,6,2,1)
+y = rand(Float32,6,6,1,1)
 model = Chain(Decatenation(2,3),Parallel((test_layer,test_layer)),Addition())
 test(model,x,y)
+test(move(model,gpu),gpu(x),gpu(y))
 
 # Test Upscaling layer
-x = rand(Float32,4,4,1,1)
+x = rand(Float32,6,6,1,1)
 # Dimension 1
-y = rand(Float32,8,4,2,1)
+y = rand(Float32,12,6,2,1)
 model = Chain(test_layer,Upscaling(2,1))
 test(model,x,y)
+test(move(model,gpu),gpu(x),gpu(y))
 # Dimension 2
-y = rand(Float32,4,8,2,1)
+y = rand(Float32,6,12,2,1)
 model = Chain(test_layer,Upscaling(2,2))
 test(model,x,y)
+test(move(model,gpu),gpu(x),gpu(y))
 # Dimension 1,2
-y = rand(Float32,8,8,2,1)
+y = rand(Float32,12,12,2,1)
 model = Chain(test_layer,Upscaling(2,(1,2)))
 test(model,x,y)
+test(move(model,gpu),gpu(x),gpu(y))
+
 # Dimension 3
-y = rand(Float32,4,4,4,1)
+y = rand(Float32,6,6,4,1)
 model = Chain(test_layer,Upscaling(2,3))
 test(model,x,y)
+test(move(model,gpu),gpu(x),gpu(y))
 
 # Test Activation layer
 x = rand(Float32,4,4,1,1)
 y = rand(Float32,4,4,2,1)
 model = Chain(test_layer,Activation(tanh))
 test(model,x,y)
+test(move(model,gpu),gpu(x),gpu(y))
 
 # Test Identity layer
 x = rand(Float32,4,4,1,1)
 y = rand(Float32,4,4,3,1)
 model = Chain(Parallel((test_layer,Identity())),Catenation(3))
 test(model,x,y)
+test(move(model,gpu),gpu(x),gpu(y))
