@@ -1,7 +1,8 @@
 
 using Flux, CUDA
-path_layers = joinpath(dirname(@__DIR__),"src","layers.jl")
+path_layers = joinpath(dirname(@__DIR__),"src","FluxExtra.jl")
 include(path_layers)
+using .FluxExtra
 
 function test(model::Chain,x::T,y::T) where T<:AbstractArray{<:AbstractFloat,4}
     losses = Vector{Float32}(undef,2)
