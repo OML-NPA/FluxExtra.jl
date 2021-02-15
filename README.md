@@ -1,6 +1,17 @@
 # FluxExtra
 
-Additional layers for the Flux machine learning library.
+Additional layers and functions for the Flux machine learning library.
+
+## Functions
+
+### Moving models between GPU and CPU
+
+Allows to move complicated models between CPU and GPU. Use `cpu` or `gpu` as a target.
+```
+move(model,target::Union{typeof(cpu),typeof(gpu)})
+```
+
+## Layers
 
 ### Parallel
 ```
