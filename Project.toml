@@ -1,7 +1,7 @@
 name = "FluxExtra"
 uuid = "81ebe36b-92a1-4b50-bd7a-fa963d2933c8"
 authors = ["Open Machone Learning Association <a_ill@outlook.com>"]
-version = "0.1.3"
+version = "0.2.0"
 
 [deps]
 CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
