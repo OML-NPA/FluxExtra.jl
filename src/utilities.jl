@@ -12,7 +12,7 @@ function move(model,target::Union{typeof(cpu),typeof(gpu)})
                     new_layers[i] = move(layers[i],target)
                 end
                 new_layers = (new_layers...,)
-                push!(model_moved,target(Parallel(new_layers)))
+                push!(model_moved,target(Parallel(tuple,new_layers)))
             else
                 push!(model_moved,target(model[i]))
             end
