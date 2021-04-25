@@ -28,24 +28,24 @@ loss = Flux.Losses.mse
 test_layer = Conv((3, 3), 1=>2,pad=SamePad())
 test_layer2 = Chain(Conv((3, 3), 1=>2,pad=SamePad()))
 
-# Test Parallel and Catenation layers
+# Test Parallel and Join layers
 x = rand(Float32,6,6,1,1)
 y = rand(Float32,6,6,4,1)
-model = Chain(Parallel((test_layer,test_layer2)),Catenation(3))
+model = Chain(Parallel(tuple,(test_layer,test_layer2)),Join(3))
 test(model,x,y)
 test(move(model,gpu),gpu(x),gpu(y))
 
-# Test Decatenation layer
+# Test Split layer
 x = rand(Float32,6,6,2,1)
 y = rand(Float32,6,6,4,1)
-model = Chain(Decatenation(2,3),Parallel((test_layer,test_layer)),Catenation(3))
+model = Chain(Split(2,3),Parallel(tuple,(test_layer,test_layer)),Join(3))
 test(model,x,y)
 test(move(model,gpu),gpu(x),gpu(y))
 
 # Test Addition layer
 x = rand(Float32,6,6,2,1)
 y = rand(Float32,6,6,1,1)
-model = Chain(Decatenation(2,3),Parallel((test_layer,test_layer)),Addition())
+model = Chain(Split(2,3),Parallel(tuple,(test_layer,test_layer)),Addition())
 test(model,x,y)
 test(move(model,gpu),gpu(x),gpu(y))
 
@@ -53,23 +53,23 @@ test(move(model,gpu),gpu(x),gpu(y))
 x = rand(Float32,6,6,1,1)
 # Dimension 1
 y = rand(Float32,12,6,2,1)
-model = Chain(test_layer,Upscaling(2,1))
+model = Chain(test_layer,Upsample(scale=(2,1)))
 test(model,x,y)
 test(move(model,gpu),gpu(x),gpu(y))
 # Dimension 2
 y = rand(Float32,6,12,2,1)
-model = Chain(test_layer,Upscaling(2,2))
+model = Chain(test_layer,Upsample(scale=(1,2)))
 test(model,x,y)
 test(move(model,gpu),gpu(x),gpu(y))
 # Dimension 1,2
 y = rand(Float32,12,12,2,1)
-model = Chain(test_layer,Upscaling(2,(1,2)))
+model = Chain(test_layer,Upsample(scale=2))
 test(model,x,y)
 test(move(model,gpu),gpu(x),gpu(y))
 
 # Dimension 3
 y = rand(Float32,6,6,4,1)
-model = Chain(test_layer,Upscaling(2,3))
+model = Chain(test_layer,Upsample(scale=(1,1,2)))
 test(model,x,y)
 test(move(model,gpu),gpu(x),gpu(y))
 
@@ -83,6 +83,6 @@ test(move(model,gpu),gpu(x),gpu(y))
 # Test Identity layer
 x = rand(Float32,4,4,1,1)
 y = rand(Float32,4,4,3,1)
-model = Chain(Parallel((test_layer,Identity())),Catenation(3))
+model = Chain(Parallel(tuple,(test_layer,Identity())),Join(3))
 test(model,x,y)
 test(move(model,gpu),gpu(x),gpu(y))

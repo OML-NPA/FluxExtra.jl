@@ -5,6 +5,6 @@ import CUDA.CuArray
 include("layers.jl")
 include("utilities.jl")
 
-export Parallel, Catenation, Decatenation, Upscaling, Addition, Activation, Identity, move
+export Join, Split, Addition, Activation, Identity, move
 
 end
