@@ -54,6 +54,9 @@ function Split_func(x::T,m::Split{D}) where {D,T<:AbstractArray{<:AbstractFloat,
 end
 (m::Split{D})(x::T) where {D,T<:AbstractArray} = Split_func(x,m)
 
+# Makes Parallel layer type stable when used after Split
+(m::Parallel)(xs::NTuple{N,AbstractArray}) where N = map((f,x) -> f(x), m.layers,xs)
+
 # Addition layer
 struct Addition 
 end
