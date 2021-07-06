@@ -66,7 +66,7 @@ struct Activation{F}
 end
 (m::Activation{F})(x) where F = F.(x)
 
-# Flatten
+# Flatten layer
 struct Flatten 
 end
 (m::Flatten)(x) = Flux.flatten(x)
