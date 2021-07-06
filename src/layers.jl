@@ -51,16 +51,18 @@ function Split_func(x::T,outputs::Int64,
         dim::Int64) where T<:AbstractArray{<:AbstractFloat,4}
     step_var = Int64(size(x, dim) / outputs)
     f = i::Int64 -> (1+(i-1)*step_var):(i)*step_var
-    vals = ntuple(i -> i, outputs)
+    vals = 1:outputs
     inds_vec = map(f,vals)
     if dim == 1
         x_out = map(inds -> x[inds,:,:,:],inds_vec)
+        return x_out
     elseif dim == 2
         x_out = map(inds -> x[:,inds,:,:],inds_vec)
+        return x_out
     else # dim == 3
         x_out = map(inds -> x[:,:,inds,:],inds_vec)
+        return x_out
     end
-    return x_out
 end
 (m::Split)(x) = Split_func(x,m.outputs,m.dim)
 
