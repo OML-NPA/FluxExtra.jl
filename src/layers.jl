@@ -1,57 +1,45 @@
 
 # Join layer
-struct Join # Not type stable inside
+struct Join{D} # Not type stable inside
     dim::Int64
     function Join(dim)
         if dim>3
             throw(DimensionMismatch("Dimension should be 1, 2 or 3."))
         end
-        new(dim)
+        new{dim}(dim)
     end
 end
-(m::Join)(x::NTuple{N,T}) where {T<:AbstractArray,N} = cat(x...,dims = Val(m.dim))::T
-
-struct Join1 # Type stable
-end
-(m::Join1)(x::NTuple{N,T}) where {T<:AbstractArray,N} = vcat(x...)
-
-struct Join2 # Type stable
-end
-(m::Join2)(x::NTuple{N,T}) where {T<:AbstractArray,N} = hcat(x...)
-
-struct Join3 # Type stable
-end
-(m::Join3)(x::NTuple{N,T}) where {T<:AbstractArray,N} = cat(x...,dims = Val(3))
+(m::Join{D})(x::NTuple{N,T}) where {D,N,T<:AbstractArray} = cat(x...,dims = Val(D))
 
 
 # Split layer
-struct Split
+struct Split{D}
     outputs::Int64
     dim::Int64
     function Split(outputs,dim)
         if dim>3
             throw(DimensionMismatch("Dimension should be 1, 2 or 3."))
         end
-        new(outputs,dim)
+        new{outputs}(outputs,dim)
     end
 end
-function Split_func(x::T,outputs::Int64, 
-        dim::Int64) where T<:AbstractArray{<:AbstractFloat,2}
+function Split_func(x::T,m::Split{D}) where {D,T<:AbstractArray{<:AbstractFloat,2}}
+    dim = m.dim
     if dim!=1
         throw(DimensionMismatch("Dimension should be 1."))
     end
-    step_var = Int64(size(x, dim) / outputs)
+    step_var = Int64(size(x, dim) / D)
     f = i::Int64 -> (1+(i-1)*step_var):(i)*step_var
-    vals = ntuple(i -> i, outputs)
+    vals = ntuple(i -> i, D)
     inds_vec = map(f,vals)
     x_out = map(inds -> x[inds,:],inds_vec)
     return x_out
 end
-function Split_func(x::T,outputs::Int64, 
-        dim::Int64) where T<:AbstractArray{<:AbstractFloat,4}
-    step_var = Int64(size(x, dim) / outputs)
+function Split_func(x::T,m::Split{D}) where {D,T<:AbstractArray{<:AbstractFloat,4}}
+    dim = m.dim
+    step_var = Int64(size(x, dim) / D)
     f = i::Int64 -> (1+(i-1)*step_var):(i)*step_var
-    vals = 1:outputs
+    vals = ntuple(i -> i, D)
     inds_vec = map(f,vals)
     if dim == 1
         x_out = map(inds -> x[inds,:,:,:],inds_vec)
@@ -64,7 +52,7 @@ function Split_func(x::T,outputs::Int64,
         return x_out
     end
 end
-(m::Split)(x) = Split_func(x,m.outputs,m.dim)
+(m::Split{D})(x::T) where {D,T<:AbstractArray} = Split_func(x,m)
 
 # Addition layer
 struct Addition 
