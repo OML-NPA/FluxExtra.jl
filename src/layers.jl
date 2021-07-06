@@ -1,6 +1,6 @@
 
 # Join layer
-struct Join{D} # Not type stable inside
+struct Join{D}
     dim::Int64
     function Join(dim)
         if dim>3
