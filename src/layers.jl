@@ -1,39 +1,39 @@
 
 # Join layer
-struct Join
+struct Join # Not type stable inside
     dim::Int64
-end
-
-function cat_dispatcher(x::NTuple{N,T},dim::Int64) where {N,T<:AbstractMatrix}
-    if dim==1
-        return vcat(x...)
-    else
-        msg::String = string("Only dimensions 1 is supported. Given ",dim,".")
-        err::DimensionMismatch = DimensionMismatch(msg)
-        throw(err)
+    function Join(dim)
+        if dim>3
+            throw(DimensionMismatch("Dimension should be 1, 2 or 3."))
+        end
+        new(dim)
     end
 end
+(m::Join)(x::NTuple{N,T}) where {T<:AbstractArray,N} = cat(x...,dims = Val(m.dim))::T
 
-function cat_dispatcher(x::NTuple{N,T},dim::Int64) where {N,Y,T<:AbstractArray{Y,4}}
-    if dim==1
-        return vcat(x...)
-    elseif dim==2
-        return hcat(x...)
-    elseif dim==3
-        return cat(x...,dims=Val(3))
-    else
-        msg::String = string("Only dimensions 1,2 and 3 are supported. Given ",dim,".")
-        err::DimensionMismatch = DimensionMismatch(msg)
-        throw(err)
-    end
+struct Join1 # Type stable
 end
+(m::Join1)(x::NTuple{N,T}) where {T<:AbstractArray,N} = vcat(x...)
 
-(m::Join)(x::NTuple{N,T}) where {T<:AbstractArray,N} = cat_dispatcher(x,m.dim)
+struct Join2 # Type stable
+end
+(m::Join2)(x::NTuple{N,T}) where {T<:AbstractArray,N} = hcat(x...)
+
+struct Join3 # Type stable
+end
+(m::Join3)(x::NTuple{N,T}) where {T<:AbstractArray,N} = cat(x...,dims = Val(3))
+
 
 # Split layer
 struct Split
     outputs::Int64
     dim::Int64
+    function Split(outputs,dim)
+        if dim>3
+            throw(DimensionMismatch("Dimension should be 1, 2 or 3."))
+        end
+        new(outputs,dim)
+    end
 end
 function Split_func(x::T,outputs::Int64, 
         dim::Int64) where T<:AbstractArray{<:AbstractFloat,2}
@@ -49,9 +49,6 @@ function Split_func(x::T,outputs::Int64,
 end
 function Split_func(x::T,outputs::Int64, 
         dim::Int64) where T<:AbstractArray{<:AbstractFloat,4}
-    if dim>3
-        throw(DimensionMismatch("Dimension should be 1, 2 or 3."))
-    end
     step_var = Int64(size(x, dim) / outputs)
     f = i::Int64 -> (1+(i-1)*step_var):(i)*step_var
     vals = ntuple(i -> i, outputs)
