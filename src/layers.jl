@@ -68,7 +68,8 @@ end
 (m::Split)(x) = Split_func(x,m.outputs,m.dim)
 
 # Addition layer
-struct Addition end
+struct Addition 
+end
 (m::Addition)(x) = sum(x)
 
 # Activation layer
@@ -78,7 +79,7 @@ end
 (m::Activation)(x) = m.f.(x)
 
 # Flatten
-struct Flatten
+struct Flatten 
 end
 (m::Flatten)(x) = Flux.flatten(x)
 
