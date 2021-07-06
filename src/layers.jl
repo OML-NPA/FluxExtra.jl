@@ -1,12 +1,11 @@
 
 # Join layer
 struct Join{D}
-    dim::Int64
     function Join(dim)
         if dim>3
             throw(DimensionMismatch("Dimension should be 1, 2 or 3."))
         end
-        new{dim}(dim)
+        new{dim}()
     end
 end
 (m::Join{D})(x::NTuple{N,T}) where {D,N,T<:AbstractArray} = cat(x...,dims = Val(D))
@@ -14,13 +13,12 @@ end
 
 # Split layer
 struct Split{D}
-    outputs::Int64
     dim::Int64
     function Split(outputs,dim)
         if dim>3
             throw(DimensionMismatch("Dimension should be 1, 2 or 3."))
         end
-        new{outputs}(outputs,dim)
+        new{outputs}(dim)
     end
 end
 function Split_func(x::T,m::Split{D}) where {D,T<:AbstractArray{<:AbstractFloat,2}}
@@ -63,10 +61,10 @@ end
 (m::Addition)(x) = sum(x)
 
 # Activation layer
-struct Activation
-    f::Function
+struct Activation{F}
+    Activation(f) = new{f}()
 end
-(m::Activation)(x) = m.f.(x)
+(m::Activation{F})(x) where F = F.(x)
 
 # Flatten
 struct Flatten 
