@@ -1,5 +1,11 @@
 
 # Join layer
+"""
+    Join(dim::Int64)
+    Join(dim = dim::Int64)
+
+Concatenates a tuple of arrays along a dimension `dim`. A convenient and type stable way of using `x -> cat(x..., dims = dim)`.
+"""
 struct Join{D}
     dim::Int64
     function Join(dim)
@@ -21,7 +27,14 @@ function Base.show(io::IO, l::Join)
     print(io, "Join(", "dim = ",l.dim, ")")
 end
 
+
 # Split layer
+"""
+    Split(outputs::Int64, dim::Int64)
+    Split(outputs::Int64, dim = dim::Int64)
+
+Breaks an array into a number of arrays which is equal to `outputs` along a dimension `dim`. `dim` should we divisible by `outputs` without a remainder.
+"""
 struct Split{O,D}
     outputs::Int64
     dim::Int64
@@ -77,28 +90,52 @@ end
 # Makes Parallel layer type stable when used after Split
 (m::Parallel)(xs::NTuple{N,AbstractArray}) where N = map((f,x) -> f(x), m.layers,xs)
 
+
 # Addition layer
+"""
+    Addition()
+
+A convenient way of using `x -> sum(x)`.
+"""
 struct Addition 
 end
-(m::Addition)(x) = sum(x)
+(m::Addition)(x::NTuple{N,AbstractArray}) where N = sum(x)
+
 
 # Activation layer
+"""
+    Activation(f::Function)
+
+A convenient way of using `x -> f(x)`.
+"""
 struct Activation{F}
     f::Function
     Activation(f) = new{f}(f)
 end
-(m::Activation{F})(x) where F = F.(x)
+(m::Activation{F})(x::AbstractArray) where F = F.(x)
 
 function Base.show(io::IO, l::Activation)
     print(io, "Activation(",l.f, ")")
 end
 
+
 # Flatten layer
+"""
+    Flatten()
+
+Flattens an array. A convenient way of using `x -> Flux.flatten(x)`.
+"""
 struct Flatten 
 end
-(m::Flatten)(x) = Flux.flatten(x)
+(m::Flatten)(x::AbstractArray) = Flux.flatten(x)
+
 
 # Identity layer
+"""
+    Identity()
+
+Returns its input without changes. Should be used with a `Parallel` layer if one wants to have a branch that does not change its input.
+"""
 struct Identity
 end
-(m::Identity)(x) = x
+(m::Identity)(x::AbstractArray) = x
