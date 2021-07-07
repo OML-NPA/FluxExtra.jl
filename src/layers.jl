@@ -113,6 +113,7 @@ struct Activation{F}
     Activation(f) = new{typeof(f)}(f)
 end
 (m::Activation)(x::AbstractArray) = m.f.(x)
+Flux.@functor(Activation)
 
 function Base.show(io::IO, l::Activation)
     print(io, "Activation(",l.f, ")")
