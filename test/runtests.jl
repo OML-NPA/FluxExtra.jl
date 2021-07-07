@@ -108,6 +108,14 @@ catch e
     end
 end
 
+try
+    Split(1,dim = 1)
+catch e
+    if !(e isa DomainError)
+        error("Wrong error returned.")
+    end
+end
+
 Base.show(IOBuffer(),Split(2,3))
 
 
