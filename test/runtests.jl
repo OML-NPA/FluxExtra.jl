@@ -46,7 +46,7 @@ test(model,x,y)
 
 x = ones(Float32,6,6,1,1)
 y = ones(Float32,6,6,4,1)
-model = Chain(Parallel(tuple,(test_layer,test_layer2)),Join(3))
+model = Chain(Parallel(tuple,(test_layer,test_layer2)),Join(dim = 3))
 test(model,x,y)
 
 try
@@ -57,7 +57,27 @@ catch e
     end
 end
 
+try
+    Join(dim = 4)
+catch e
+    if !(e isa DimensionMismatch)
+        error("Wrong error returned.")
+    end
+end
+
+Join(1)
+
 # Test Split layer
+x = ones(Float32,6,6,1,1)
+y = ones(Float32,6,6,2,1)
+model = Chain(Split(2,1),Parallel(tuple,(test_layer,test_layer)),Join(1))
+test(model,x,y)
+
+x = ones(Float32,6,6,1,1)
+y = ones(Float32,6,6,2,1)
+model = Chain(Split(2,2),Parallel(tuple,(test_layer,test_layer)),Join(2))
+test(model,x,y)
+
 x = ones(Float32,6,6,2,1)
 y = ones(Float32,6,6,4,1)
 model = Chain(Split(2,3),Parallel(tuple,(test_layer,test_layer)),Join(3))
@@ -71,6 +91,15 @@ catch e
     end
 end
 
+try
+    Split(1,1)
+catch e
+    if !(e isa DomainError)
+        error("Wrong error returned.")
+    end
+end
+
+Split(2,3)
 
 # Test Addition layer
 x = ones(Float32,6,6,2,1)
@@ -90,6 +119,8 @@ x = ones(Float32,4,4,1,1)
 y = ones(Float32,32,1)
 model = Chain(test_layer,Flatten())
 test(model,x,y)
+
+Activation(tanh)
 
 # Test Identity layer
 x = ones(Float32,4,4,1,1)
