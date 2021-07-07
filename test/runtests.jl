@@ -1,5 +1,5 @@
 
-using Flux, FluxExtra, CUDA, Test
+using Flux, CUDA, Test, FluxExtra
 
 function test_training(model,x,y)
     losses = Vector{Float32}(undef,2)
@@ -11,11 +11,10 @@ function test_training(model,x,y)
             loss_val = loss(predicted,y)
         end
         losses[i] = loss_val
-        # Update weights
         Flux.Optimise.update!(opt,ps,gs)
     end
     if losses[1]==losses[2]
-        error("Gradient not updating")
+        error("Parameters not updating.")
     end
     return nothing
 end
@@ -85,8 +84,7 @@ test(model,x,y)
 x = ones(Float32,4,4,1,1)
 y = ones(Float32,4,4,2,1)
 model = Chain(test_layer,Activation(tanh))
-test_training(model,x,y)
-#test(model,x,y)
+test(model,x,y)
 
 # Test Flatten layer
 x = ones(Float32,4,4,1,1)
