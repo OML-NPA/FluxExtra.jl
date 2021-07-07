@@ -84,7 +84,7 @@ end
 
 # Activation layer
 struct Activation{F}
-    f
+    f::Function
     Activation(f) = new{f}(f)
 end
 (m::Activation{F})(x) where F = F.(x)
