@@ -1,33 +1,18 @@
 # FluxExtra
 
-Additional layers and functions for the Flux machine learning library.
-
-## Functions
-
-### Moving models between GPU and CPU
-
-Allows to move complicated models between CPU and GPU. Use `cpu` or `gpu` as a target.
-```
-move(model,target::Union{typeof(cpu),typeof(gpu)})
-```
+Additional layers for the [Flux.jl](https://github.com/FluxML/Flux.jl) machine learning library.
 
 ## Layers
 
-### Parallel
+### Join
 ```
-Parallel(layers::Tuple)
+Join(dim::Int64)
 ```
-Allows to have multiple branches in a neural network.
+Concatenates an array of arrays along a dimension `dim`. A convenient way of using `x -> cat(x..., dims = dim)`.
 
-### Catenation
+### Split
 ```
-Catenation(dim::Int64)
-```
-Concatenates an array of arrays along a dimension `dim`. A convenient way of writing `x -> cat(x..., dims = dim)`.
-
-### Decatenation
-```
-Decatenation(output::Int64,dim::Int64)
+Split(output::Int64,dim::Int64)
 ```
 Breaks an array into a number of arrays which is equal to `output` along a dimension `dim`.
 
@@ -36,12 +21,6 @@ Breaks an array into a number of arrays which is equal to `output` along a dimen
 Addition()
 ```
 A convenient way of using `x -> sum(x)`
-
-### Upscaling
-```
-Upscaling(multiplier::Int64,dims::Union{Int64,Tuple{Int64,Int64},Tuple{Int64,Int64,Int64}}))
-```
-Bileniar upscaling. Scales the input array by `multiplier`. Requires a user to input a new size as a second argument and from 1 to 3 dimensions that should be scaled.
 
 ### Activation
 ```
@@ -53,4 +32,4 @@ A convenient way of using `x -> some_activation_function`.
 ```
 Identity()
 ```
-Returns its input without changes. Should be used with a Parallel layer if one wants to have a branch that does not change its input.
+Returns its input without changes. Should be used with a `Parallel` layer if one wants to have a branch that does not change its input.
