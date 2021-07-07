@@ -41,12 +41,16 @@ struct Split{O,D}
     function Split(outputs,dim)
         if dim>3
             throw(DimensionMismatch("Dimension should be 1, 2 or 3."))
+        elseif outputs<2
+            throw(DomainError(outputs, "The number of outputs should be 2 or more."))
         end
         new{outputs,dim}(outputs,dim)
     end
     function Split(outputs;dim)
         if dim>3
             throw(DimensionMismatch("Dimension should be 1, 2 or 3."))
+        elseif outputs<2
+            throw(DomainError(outputs, "The number of outputs should be 2 or more."))
         end
         new{outputs,dim}(outputs,dim)
     end
