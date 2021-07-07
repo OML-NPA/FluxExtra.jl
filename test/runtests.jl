@@ -93,6 +93,14 @@ catch e
 end
 
 try
+    Split(2,dim = 4)
+catch e
+    if !(e isa DimensionMismatch)
+        error("Wrong error returned.")
+    end
+end
+
+try
     Split(1,1)
 catch e
     if !(e isa DomainError)
