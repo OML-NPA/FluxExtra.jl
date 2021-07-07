@@ -108,11 +108,16 @@ end
 
 A convenient way of using `x -> f(x)`.
 """
-struct Activation{F}
+#=struct Activation{F}
     f::F
     Activation(f) = new{typeof(f)}(f)
 end
-(m::Activation)(x::AbstractArray) = m.f.(x)
+(m::Activation)(x::AbstractArray) = m.f.(x)=#
+
+struct Activation
+    f::Function
+end
+(m::Activation)(x) = m.f.(x)
 
 function Base.show(io::IO, l::Activation)
     print(io, "Activation(",l.f, ")")

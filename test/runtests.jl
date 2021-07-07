@@ -85,7 +85,8 @@ test(model,x,y)
 x = ones(Float32,4,4,1,1)
 y = ones(Float32,4,4,2,1)
 model = Chain(test_layer,Activation(tanh))
-test(model,x,y)
+test_training(model,x,y)
+#test(model,x,y)
 
 # Test Flatten layer
 x = ones(Float32,4,4,1,1)
