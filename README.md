@@ -1,35 +1,49 @@
-# FluxExtra
+[![CI](https://github.com/OML-NPA/FluxExtra.jl/actions/workflows/CI-main.yml/badge.svg)](https://github.com/OML-NPA/FluxExtra.jl/actions/workflows/CI-main.yml)
 
-Additional layers for the [Flux.jl](https://github.com/FluxML/Flux.jl) machine learning library.
+# FluxExtras
+
+Additional layers and functions for the [Flux.jl](https://github.com/FluxML/Flux.jl) machine learning library.
 
 ## Layers
 
 ### Join
 ```
 Join(dim::Int64)
+Join(dim = dim::Int64)
 ```
-Concatenates an array of arrays along a dimension `dim`. A convenient way of using `x -> cat(x..., dims = dim)`.
+Concatenates a tuple of arrays along a dimension `dim`. A convenient and type stable way of using `x -> cat(x..., dims = dim)`.
 
 ### Split
 ```
-Split(output::Int64,dim::Int64)
+Split(outputs::Int64,dim::Int64)
+Split(outputs::Int64, dim = dim::Int64)
 ```
-Breaks an array into a number of arrays which is equal to `output` along a dimension `dim`.
+Breaks an array into a number of arrays which is equal to `output` along a dimension `dim`. `dim` should we divisible by `outputs` without a remainder.
+
+### Flatten
+```
+Flatten()
+```
+Flattens an array. A convenient way of using `x -> Flux.flatten(x)`.
 
 ### Addition
 ```
 Addition()
 ```
-A convenient way of using `x -> sum(x)`
+A convenient way of using `x -> sum(x)`.
 
 ### Activation
 ```
 Activation(f::Function)
 ```
-A convenient way of using `x -> some_activation_function`.
+A convenient way of using `x -> f(x)`.
 
 ### Identity
 ```
 Identity()
 ```
 Returns its input without changes. Should be used with a `Parallel` layer if one wants to have a branch that does not change its input.
+
+## Other
+
+Makes `Flux.Parallel` layer type stable when used with tuples.
