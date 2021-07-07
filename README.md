@@ -1,6 +1,6 @@
 [![CI](https://github.com/OML-NPA/FluxExtra.jl/actions/workflows/CI-main.yml/badge.svg)](https://github.com/OML-NPA/FluxExtra.jl/actions/workflows/CI-main.yml)
 
-# FluxExtras
+# FluxExtra
 
 Additional layers and functions for the [Flux.jl](https://github.com/FluxML/Flux.jl) machine learning library.
 
