@@ -2,6 +2,8 @@
 using Flux, CUDA, Test, FluxExtra
 
 function test_training(model,x,y)
+    opt = ADAM()
+    loss = Flux.Losses.mse
     losses = Vector{Float32}(undef,2)
     for i = 1:2
         local loss_val
@@ -25,9 +27,6 @@ function test(model,x,y)
     @inferred gpu(model)(gpu(x))
     test_training(gpu(model),gpu(x),gpu(y))
 end
-
-opt = Descent(0.1)
-loss = Flux.Losses.mse
 
 #---Convolution-----------------------------------------------------------
 
