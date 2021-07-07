@@ -110,7 +110,7 @@ A convenient way of using `x -> f(x)`.
 """
 struct Activation{F}
     f::F
-    Activation(f) = new{typeof(f)}(f)
+    Activation(f::Function) = new{typeof(f)}(f)
 end
 (m::Activation{F})(x::AbstractArray) where F = m.f.(x)
 
