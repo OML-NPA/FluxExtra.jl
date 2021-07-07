@@ -1,4 +1,5 @@
 [![CI](https://github.com/OML-NPA/FluxExtra.jl/actions/workflows/CI-main.yml/badge.svg)](https://github.com/OML-NPA/FluxExtra.jl/actions/workflows/CI-main.yml)
+[![codecov](https://codecov.io/gh/OML-NPA/FluxExtra.jl/branch/main/graph/badge.svg?token=JROBFGEVQN)](https://codecov.io/gh/OML-NPA/FluxExtra.jl)
 
 # FluxExtra
 
