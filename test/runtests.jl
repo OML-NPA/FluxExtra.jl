@@ -65,12 +65,13 @@ catch e
     end
 end
 
-Join(1)
+Base.show(IOBuffer(),Join(1))
+
 
 # Test Split layer
 x = ones(Float32,6,6,1,1)
 y = ones(Float32,6,6,2,1)
-model = Chain(Split(2,1),Parallel(tuple,(test_layer,test_layer)),Join(1))
+model = Chain(Split(2,dim = 1),Parallel(tuple,(test_layer,test_layer)),Join(1))
 test(model,x,y)
 
 x = ones(Float32,6,6,1,1)
@@ -99,7 +100,8 @@ catch e
     end
 end
 
-Split(2,3)
+Base.show(IOBuffer(),Split(2,3))
+
 
 # Test Addition layer
 x = ones(Float32,6,6,2,1)
@@ -120,7 +122,7 @@ y = ones(Float32,32,1)
 model = Chain(test_layer,Flatten())
 test(model,x,y)
 
-Activation(tanh)
+Base.show(IOBuffer(),Activation(tanh))
 
 # Test Identity layer
 x = ones(Float32,4,4,1,1)
