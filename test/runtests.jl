@@ -99,24 +99,24 @@ end
     end
 
     @testset "Split" begin
-        @testset "Split(1)" begin
+        @testset "Split(_,1)" begin
             x = ones(Float32,6,6,1,1)
             y = ones(Float32,6,6,2,1)
             model = Chain(Split(2,1),Parallel(tuple,(test_layer,test_layer)),Join(1))
             eval(test_model(model,x,y))
         end
         
-        @testset "Split(2)" begin
+        @testset "Split(_,2)" begin
             x = ones(Float32,6,6,1,1)
             y = ones(Float32,6,6,2,1)
             model = Chain(Split(2,2),Parallel(tuple,(test_layer,test_layer)),Join(2))
             eval(test_model(model,x,y))
         end
 
-        @testset "Split(dim = 3)" begin
+        @testset "Split(_,dim = 3)" begin
             x = ones(Float32,6,6,2,1)
             y = ones(Float32,6,6,4,1)
-            model = Chain(Split(2,3),Parallel(tuple,(test_layer,test_layer)),Join(3))
+            model = Chain(Split(2,dim = 3),Parallel(tuple,(test_layer,test_layer)),Join(3))
             eval(test_model(model,x,y))
         end
 
@@ -225,7 +225,7 @@ end
     end
 
     @testset "Split" begin
-        @testset "Split(1)" begin
+        @testset "Split(_,1)" begin
             x = ones(Float32,4,1)
             y = ones(Float32,6,1)
             model = Chain(Split(2,1),Parallel(tuple,(test_layer,test_layer)),Join(1))
