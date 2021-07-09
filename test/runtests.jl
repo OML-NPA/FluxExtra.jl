@@ -217,10 +217,11 @@ end
 
     @testset "Join" begin
         @testset "Join(1)" begin
-        x = ones(Float32,2,1)
-        y = ones(Float32,6,1)
-        model = Chain(Parallel(tuple,(test_layer,test_layer2)),Join(1))
-        eval(test_model(model,x,y))
+            x = ones(Float32,2,1)
+            y = ones(Float32,6,1)
+            model = Chain(Parallel(tuple,(test_layer,test_layer2)),Join(1))
+            eval(test_model(model,x,y))
+        end
     end
 
     @testset "Split" begin
@@ -244,7 +245,6 @@ end
                         true
                     end
                 end
-            end
         end
     end
 
