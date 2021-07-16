@@ -278,6 +278,7 @@ end
         min_vals,max_vals = norm_negpos1!(data)
         norm_negpos1!(data,min_vals,max_vals)
         mean_vals = norm_zerocenter!(data)
+        norm_zerocenter!(data,mean_vals)
         mean_vals,std_vals = norm_zscore!(data)
         norm_zscore!(data,mean_vals,std_vals)
         true
