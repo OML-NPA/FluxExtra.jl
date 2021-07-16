@@ -14,7 +14,7 @@ function norm_range!(data::Vector{T},new_min::F,new_max::F) where {F<:AbstractFl
     for x in data
         x = ((x .- min_vals)./(max_vals .- min_vals)).*(new_max .- new_min) .+ new_min
     end
-    return nothing
+    return min_vals, max_vals
 end
 
 """
@@ -23,21 +23,22 @@ end
 Rescales each feature (last dimension) to be in the range [0,1].
 """
 function norm_01!(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
-    norm_range!(data,zero(F),one(F))
-    return nothing
+    min_vals, max_vals = norm_range!(data,zero(F),one(F))
+    return min_vals, max_vals
 end
 
 """
-    norm_01!(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
+    norm_negpos1(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
 
 Rescales each feature (last dimension) to be in the range [-1,1].
 """
 function norm_negpos1!(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
-    norm_range!(data,-one(F),one(F))
+    min_vals, max_vals = norm_range!(data,-one(F),one(F))
+    return min_vals, max_vals
 end
 
 """
-    norm_01!(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
+    norm_zerocenter!(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
 
 Subtracts the mean of each feature (last dimension).
 """
@@ -50,11 +51,11 @@ function norm_zerocenter!(data::Vector{T}) where {N,T<:Array{<:AbstractFloat,N}}
     for x in data
         x .= x .- mean_vals
     end
-    return nothing
+    return mean_vals
 end
 
 """
-    norm_01!(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
+    norm_zscore!(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
 
 Subtracts the mean and divides by the standard deviation of each feature (last dimension).
 """
@@ -67,9 +68,9 @@ function norm_zscore!(data::Vector{T}) where {N,T<:Array{<:AbstractFloat,N}}
         std_vals[i] = std(cat(selectdim.(data, N, i)...,dims=Val(N)))
     end
     for x in data
-        x .= (x .- mean_vals)
+        x .= (x .- mean_vals)./std_vals
     end
-    return nothing
+    return mean_vals, std_vals
 end
 
 
