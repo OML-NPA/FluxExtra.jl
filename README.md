@@ -45,6 +45,32 @@ Identity()
 ```
 Returns its input without changes. Should be used with a `Parallel` layer if one wants to have a branch that does not change its input.
 
+## Normalizations
+
+### [0,1]
+```
+norm_01!(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
+```
+Rescales each feature (last dimension) to be in the range [0,1].
+
+### [-1,1]
+```
+norm_negpos1(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
+```
+Rescales each feature (last dimension) to be in the range [-1,1].
+
+### Zero center
+```
+norm_zerocenter!(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
+```
+Subtracts the mean of each feature (last dimension).
+
+### Z-score
+```
+norm_zscore!(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
+```
+Subtracts the mean and divides by the standard deviation of each feature (last dimension).
+
 ## Other
 
 Makes `Flux.Parallel` layer type stable when used with tuples.
