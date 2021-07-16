@@ -1,4 +1,4 @@
-[![Docs dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://oml-npa.github.io/FluxExtra.jl/dev/)
+[![Docs dev](https://img.shields.io/badge/docs-stable-blue.svg)](https://oml-npa.github.io/FluxExtra.jl/stable/)
 [![CI](https://github.com/OML-NPA/FluxExtra.jl/actions/workflows/CI-main.yml/badge.svg)](https://github.com/OML-NPA/FluxExtra.jl/actions/workflows/CI-main.yml)
 [![codecov](https://codecov.io/gh/OML-NPA/FluxExtra.jl/branch/main/graph/badge.svg?token=JROBFGEVQN)](https://codecov.io/gh/OML-NPA/FluxExtra.jl)
 
