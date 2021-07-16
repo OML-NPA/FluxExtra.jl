@@ -1,3 +1,4 @@
+[![Docs dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://oml-npa.github.io/FluxExtra.jl/dev/)
 [![CI](https://github.com/OML-NPA/FluxExtra.jl/actions/workflows/CI-main.yml/badge.svg)](https://github.com/OML-NPA/FluxExtra.jl/actions/workflows/CI-main.yml)
 [![codecov](https://codecov.io/gh/OML-NPA/FluxExtra.jl/branch/main/graph/badge.svg?token=JROBFGEVQN)](https://codecov.io/gh/OML-NPA/FluxExtra.jl)
 
@@ -51,11 +52,21 @@ Returns its input without changes. Should be used with a `Parallel` layer if one
 ```
 norm_01!(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
 ```
+Rescales each feature (last dimension) to be in the range [0,1]. Returns min and max values for each feature.
+
+```
+norm_01!(data::Vector{T},min_vals::T,max_vals::T) where {F<:AbstractFloat,N,T<:Array{F,N}}
+```
 Rescales each feature (last dimension) to be in the range [0,1].
 
 ### [-1,1]
 ```
 norm_negpos1(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
+```
+Rescales each feature (last dimension) to be in the range [-1,1]. Returns min and max values for each feature.
+
+```
+norm_negpos1(data::Vector{T},min_vals::T,max_vals::T) where {F<:AbstractFloat,N,T<:Array{F,N}}
 ```
 Rescales each feature (last dimension) to be in the range [-1,1].
 
@@ -63,11 +74,21 @@ Rescales each feature (last dimension) to be in the range [-1,1].
 ```
 norm_zerocenter!(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
 ```
+Subtracts the mean of each feature (last dimension). Returns a mean value for each feature.
+
+```
+norm_zerocenter!(data::Vector{T},min_vals::T,max_vals::T) where {F<:AbstractFloat,N,T<:Array{F,N}}
+```
 Subtracts the mean of each feature (last dimension).
 
 ### Z-score
 ```
-norm_zscore!(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
+norm_zscore!(data::Vector{T},mean_vals::T) where {F<:AbstractFloat,N,T<:Array{F,N}}
+```
+Subtracts the mean and divides by the standard deviation of each feature (last dimension). Returns mean and standard deviation values for each feature.
+
+```
+norm_zscore!(data::Vector{T},mean_vals::T,std_vals::T) where {F<:AbstractFloat,N,T<:Array{F,N}}
 ```
 Subtracts the mean and divides by the standard deviation of each feature (last dimension).
 
