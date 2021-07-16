@@ -1,5 +1,5 @@
 
-using Flux, CUDA, Test, FluxExtra
+using Flux, CUDA, Test, FluxExtra, FluxExtra.Normalizations
 
 function test_training(model,x,y)
     opt = ADAM()
@@ -267,5 +267,16 @@ end
         y = ones(Float32,5,1)
         model = Chain(Parallel(tuple,(test_layer,Identity())),Join(1))
         eval(test_model(model,x,y))
+    end
+end
+
+@testset "Normalizations" begin
+    data = repeat([rand(Float32,5,5,3)],2)
+    @test begin
+        norm_01!(data)
+        norm_negpos1!(data)
+        norm_zerocenter!(data)
+        norm_zscore!(data)
+        true
     end
 end
