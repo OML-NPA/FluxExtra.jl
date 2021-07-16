@@ -273,10 +273,13 @@ end
 @testset "Normalizations" begin
     data = repeat([rand(Float32,5,5,3)],2)
     @test begin
-        norm_01!(data)
-        norm_negpos1!(data)
-        norm_zerocenter!(data)
-        norm_zscore!(data)
+        min_vals,max_vals = norm_01!(data)
+        norm_01!(data,min_vals,max_vals)
+        min_vals,max_vals = norm_negpos1!(data)
+        norm_negpos1!(data,min_vals,max_vals)
+        mean_vals = norm_zerocenter!(data)
+        mean_vals,std_vals = norm_zscore!(data)
+        norm_zscore!(data,mean_vals,std_vals)
         true
     end
 end
