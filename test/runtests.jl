@@ -274,13 +274,11 @@ end
     data = repeat([rand(Float32,5,5,3)],2)
     @test begin
         min_vals,max_vals = norm_01!(data)
-        norm_01!(data,min_vals,max_vals)
+        map(x -> norm_01!(x,min_vals,max_vals), data)
         min_vals,max_vals = norm_negpos1!(data)
-        norm_negpos1!(data,min_vals,max_vals)
+        map(x -> norm_negpos1!(x,min_vals,max_vals), data)
         mean_vals = norm_zerocenter!(data)
-        norm_zerocenter!(data,mean_vals)
         mean_vals,std_vals = norm_zscore!(data)
-        norm_zscore!(data,mean_vals,std_vals)
         true
     end
 end
