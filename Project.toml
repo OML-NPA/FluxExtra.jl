@@ -1,7 +1,7 @@
 name = "FluxExtra"
 uuid = "81ebe36b-92a1-4b50-bd7a-fa963d2933c8"
 authors = ["Open Machine Learning Association <a_ill@outlook.com>"]
-version = "0.4.1"
+version = "0.4.2"
 
 [deps]
 Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
