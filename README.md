@@ -55,7 +55,7 @@ norm_01!(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
 Rescales each feature (last dimension) to be in the range [0,1]. Returns min and max values for each feature.
 
 ```
-norm_01!(data::Vector{T},min_vals::T,max_vals::T) where {F<:AbstractFloat,N,T<:Array{F,N}}
+norm_01!(data::T,min_vals::T,max_vals::T) where {F<:AbstractFloat,N,T<:Array{F,N}}
 ```
 Rescales each feature (last dimension) to be in the range [0,1].
 
@@ -66,7 +66,7 @@ norm_negpos1(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
 Rescales each feature (last dimension) to be in the range [-1,1]. Returns min and max values for each feature.
 
 ```
-norm_negpos1(data::Vector{T},min_vals::T,max_vals::T) where {F<:AbstractFloat,N,T<:Array{F,N}}
+norm_negpos1(data::T,min_vals::T,max_vals::T) where {F<:AbstractFloat,N,T<:Array{F,N}}
 ```
 Rescales each feature (last dimension) to be in the range [-1,1].
 
@@ -77,18 +77,18 @@ norm_zerocenter!(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
 Subtracts the mean of each feature (last dimension). Returns a mean value for each feature.
 
 ```
-norm_zerocenter!(data::Vector{T},min_vals::T,max_vals::T) where {F<:AbstractFloat,N,T<:Array{F,N}}
+norm_zerocenter!(data::T,min_vals::T,max_vals::T) where {F<:AbstractFloat,N,T<:Array{F,N}}
 ```
 Subtracts the mean of each feature (last dimension).
 
 ### Z-score
 ```
-norm_zscore!(data::Vector{T},mean_vals::T) where {F<:AbstractFloat,N,T<:Array{F,N}}
+norm_zscore!(data::Vector{T}) where {F<:AbstractFloat,N,T<:Array{F,N}}
 ```
 Subtracts the mean and divides by the standard deviation of each feature (last dimension). Returns mean and standard deviation values for each feature.
 
 ```
-norm_zscore!(data::Vector{T},mean_vals::T,std_vals::T) where {F<:AbstractFloat,N,T<:Array{F,N}}
+norm_zscore!(data::T,mean_vals::T,std_vals::T) where {F<:AbstractFloat,N,T<:Array{F,N}}
 ```
 Subtracts the mean and divides by the standard deviation of each feature (last dimension).
 
